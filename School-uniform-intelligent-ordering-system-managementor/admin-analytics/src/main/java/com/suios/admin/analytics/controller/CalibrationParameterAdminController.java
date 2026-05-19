@@ -36,7 +36,7 @@ public class CalibrationParameterAdminController {
     private final CalibrationParameterAdminService calibrationParameterAdminService;
 
     @GetMapping("/list")
-    @Operation(summary = "分页查询校准参数", description = "按作用域、尺码、启用状态、状态、置信等级和版本筛选校准参数。")
+    @Operation(summary = "分页查询校准参数", description = "按作用域、尺码、启用状态、状态、匹配把握等级和版本筛选校准参数。")
     public R<PageResult<CalibrationParamListItemDto>> list(@RequestParam(defaultValue = "1") long pageNum,
                                                            @RequestParam(defaultValue = "10") long pageSize,
                                                            @RequestParam(required = false) String scopeType,

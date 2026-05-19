@@ -29,7 +29,7 @@
         type="warning"
         :closable="false"
         show-icon
-        :title="result.confidenceMessage || '推荐把握度较低，建议手动确认尺码表'"
+        :title="result.confidenceMessage || '匹配把握较低，建议手动确认尺码表'"
       />
 
       <div v-if="result.reasons.length" class="size-panel__reasons">
@@ -126,8 +126,8 @@ const props = defineProps({
 const showAlternativeComparison = ref(false)
 
 const confidenceLabel = computed(() => {
-  if (props.result?.confidenceLevel === 'HIGH') return '把握度高'
-  if (props.result?.confidenceLevel === 'MEDIUM') return '把握度中等'
+  if (props.result?.confidenceLevel === 'HIGH') return '匹配把握较高'
+  if (props.result?.confidenceLevel === 'MEDIUM') return '匹配把握中等'
   if (props.result?.confidenceLevel === 'LOW') return '建议确认'
   return '待评估'
 })

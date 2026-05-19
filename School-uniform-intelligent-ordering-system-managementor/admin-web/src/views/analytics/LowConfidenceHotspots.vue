@@ -2,8 +2,8 @@
   <section class="basic-page">
     <div class="page-title">
       <div>
-        <h1>低置信热点</h1>
-        <p>筛出低置信推荐占比最高的商品与尺码组合，优先定位最需要校准的热点。</p>
+        <h1>低匹配把握热点</h1>
+        <p>筛出低匹配把握推荐占比最高的商品与尺码组合，优先定位最需要校准的热点。</p>
       </div>
     </div>
 
@@ -36,10 +36,10 @@
             <el-option v-for="uniform in uniformOptions" :key="uniform.id" :label="uniform.name" :value="uniform.id" />
           </el-select>
         </el-form-item>
-        <el-form-item label="低置信阈值">
+        <el-form-item label="低匹配把握阈值">
           <div class="hotspots__slider">
             <el-slider v-model="queryForm.threshold" :min="0" :max="100" :step="1" show-input />
-            <el-tooltip content="低于该分数的推荐会被计入低置信热点" placement="top">
+            <el-tooltip content="低于该分数的推荐会被计入低匹配把握热点" placement="top">
               <el-icon class="hotspots__info"><WarningFilled /></el-icon>
             </el-tooltip>
           </div>
@@ -56,14 +56,14 @@
       <el-table v-loading="loading" :data="rows">
         <el-table-column prop="uniformName" label="商品" min-width="220" />
         <el-table-column prop="sizeName" label="尺码" min-width="120" />
-        <el-table-column prop="lowConfidenceCount" label="低置信次数" min-width="120" />
+        <el-table-column prop="lowConfidenceCount" label="低匹配把握次数" min-width="120" />
         <el-table-column prop="totalRecommendations" label="总推荐数" min-width="120" />
-        <el-table-column label="低置信率" min-width="120">
+        <el-table-column label="低匹配把握率" min-width="120">
           <template #default="{ row }">
             <el-tag :type="hotspotTag(row.lowConfidenceRate)" effect="plain">{{ formatPercent(row.lowConfidenceRate) }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="avgConfidence" label="平均置信度" min-width="120" />
+        <el-table-column prop="avgConfidence" label="平均匹配把握" min-width="120" />
       </el-table>
     </section>
   </section>
@@ -180,10 +180,10 @@ function exportCsv() {
       '学校',
       '商品',
       '尺码',
-      '低置信次数',
+      '低匹配把握次数',
       '总推荐数',
-      '低置信率',
-      '平均置信度',
+      '低匹配把握率',
+      '平均匹配把握',
       '阈值',
     ], rows.value.map((row) => [
       schoolOptions.value.find((item) => item.schoolId === queryForm.schoolId)?.schoolName || '全部学校',

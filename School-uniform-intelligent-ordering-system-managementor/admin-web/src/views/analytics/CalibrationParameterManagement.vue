@@ -40,7 +40,7 @@
             <el-option label="停用" value="DISABLED" />
           </el-select>
         </el-form-item>
-        <el-form-item label="置信等级">
+        <el-form-item label="匹配把握等级">
           <el-select v-model="queryForm.confidenceLevel" clearable placeholder="全部等级" style="width: 150px">
             <el-option label="高" value="HIGH" />
             <el-option label="中" value="MEDIUM" />
@@ -90,7 +90,7 @@
             <small>{{ row.uniqueUserCount ?? 0 }} 用户</small>
           </template>
         </el-table-column>
-        <el-table-column label="置信" width="100">
+        <el-table-column label="匹配把握" width="100">
           <template #default="{ row }">
             <el-tag :type="confidenceTag(row.confidenceLevel)" effect="plain">{{ confidenceLabel(row.confidenceLevel) }}</el-tag>
           </template>
@@ -180,7 +180,7 @@
                 <el-tag :type="statusTag(detail.status)" effect="plain">{{ statusLabel(detail.status) }}</el-tag>
               </div>
             </el-descriptions-item>
-            <el-descriptions-item label="置信等级">
+            <el-descriptions-item label="匹配把握等级">
               <el-tag :type="confidenceTag(detail.confidenceLevel)" effect="plain">{{ confidenceLabel(detail.confidenceLevel) }}</el-tag>
             </el-descriptions-item>
             <el-descriptions-item label="样本量">{{ detail.sampleSize ?? 0 }}</el-descriptions-item>

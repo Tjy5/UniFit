@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/analytics")
 @RequiredArgsConstructor
-@Tag(name = "Recommendation Analytics", description = "推荐效果分析、反馈分布与低置信度热点接口")
+@Tag(name = "Recommendation Analytics", description = "推荐效果分析、反馈分布与低匹配把握热点接口")
 public class RecommendationAnalyticsController {
 
     private final RecommendationAnalyticsService recommendationAnalyticsService;
@@ -94,13 +94,13 @@ public class RecommendationAnalyticsController {
     }
 
     @GetMapping("/low-confidence-hotspots")
-    @Operation(summary = "获取低置信度热点", description = "返回低置信度占比最高的商品与尺码热点，支持按学校、商品、阈值和时间范围过滤。")
+    @Operation(summary = "获取低匹配把握热点", description = "返回低匹配把握占比最高的商品与尺码热点，支持按学校、商品、阈值和时间范围过滤。")
     public R<LowConfidenceHotspotsResponse> lowConfidenceHotspots(
                                                                   @Parameter(description = "学校ID，留空表示全部学校")
                                                                   @RequestParam(required = false) Long schoolId,
                                                                   @Parameter(description = "商品ID，留空表示全部商品")
                                                                   @RequestParam(required = false) Long uniformId,
-                                                                  @Parameter(description = "低置信度阈值，默认 60，范围会被夹紧到 0-100")
+                                                                  @Parameter(description = "低匹配把握阈值，默认 60，范围会被夹紧到 0-100")
                                                                   @RequestParam(required = false) Integer threshold,
                                                                   @Parameter(description = "返回条数，默认 20，最大受 analytics.max-page-size 限制")
                                                                   @RequestParam(required = false) Integer limit,

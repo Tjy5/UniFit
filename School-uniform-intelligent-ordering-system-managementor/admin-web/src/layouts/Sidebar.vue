@@ -90,7 +90,7 @@ const menuGroups = [
     items: [
       { path: '/analytics/recommendations', label: '推荐效果分析', icon: TrendCharts },
       { path: '/analytics/feedback-distribution', label: '反馈分布分析', icon: DataBoard },
-      { path: '/analytics/low-confidence-hotspots', label: '低置信热点', icon: WarningFilled },
+      { path: '/analytics/low-confidence-hotspots', label: '低匹配把握热点', icon: WarningFilled },
       { path: '/analytics/behavior-funnel', label: '用户行为漏斗', icon: TrendCharts },
       { path: '/analytics/entry-comparison', label: '推荐入口对比', icon: DataAnalysis },
       { path: '/analytics/drop-off', label: '流失分布', icon: DataBoard },

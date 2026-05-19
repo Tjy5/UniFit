@@ -24,7 +24,7 @@ class ConfidenceCalculatorTest {
 
         assertEquals("HIGH", result.getLevel());
         assertTrue(result.getScore() >= 90);
-        assertTrue(result.getMessage().contains("推荐把握度较高"));
+        assertTrue(result.getMessage().contains("匹配把握较高"));
     }
 
     @Test
@@ -41,6 +41,6 @@ class ConfidenceCalculatorTest {
         assertEquals("LOW", result.getLevel());
         assertTrue(result.isLowConfidence());
         assertTrue(result.getScore() < 60);
-        assertTrue(result.getMessage().contains("推荐把握度较低"));
+        assertTrue(result.getMessage().contains("匹配把握较低"));
     }
 }

@@ -65,7 +65,7 @@
         <small>所有补货建议数量合计</small>
       </article>
       <article class="section-card supply-page__stat">
-        <span>低置信预测</span>
+        <span>低匹配把握预测</span>
         <strong>{{ lowConfidenceCount }}</strong>
         <small>数据完整性低于 50%</small>
       </article>

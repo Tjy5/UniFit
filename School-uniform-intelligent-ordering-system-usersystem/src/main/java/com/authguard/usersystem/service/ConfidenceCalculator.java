@@ -37,9 +37,9 @@ public class ConfidenceCalculator {
         boolean lowConfidence = finalScore < 60;
         String message;
         if (lowConfidence) {
-            message = "推荐把握度较低，建议参考尺码表手动选择";
+            message = "匹配把握较低，建议参考尺码表手动选择";
         } else if ("HIGH".equals(level)) {
-            message = "关键维度匹配稳定，推荐把握度较高";
+            message = "关键维度匹配稳定，匹配把握较高";
         } else {
             message = "基础维度可支撑推荐，建议结合尺码表进一步确认";
         }

@@ -82,7 +82,7 @@ const routes: RouteRecordRaw[] = [
         path: 'analytics/low-confidence-hotspots',
         name: 'analytics-low-confidence-hotspots',
         component: () => import('@/views/analytics/LowConfidenceHotspots.vue'),
-        meta: { title: '低置信热点' },
+        meta: { title: '低匹配把握热点' },
       },
       {
         path: 'analytics/behavior-funnel',

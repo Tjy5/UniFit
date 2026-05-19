@@ -3,7 +3,7 @@
     <div class="page-title">
       <div>
         <h1>推荐效果分析</h1>
-        <p>按时间、学校和商品跟踪推荐量、关联订单覆盖、反馈覆盖与置信度表现。</p>
+        <p>按时间、学校和商品跟踪推荐量、关联订单覆盖、反馈覆盖与匹配把握表现。</p>
       </div>
       <div class="analytics-page__head-actions">
         <el-button :loading="loading" plain type="primary" @click="fetchStats">刷新数据</el-button>
@@ -63,7 +63,7 @@
         <div class="analytics-page__panel-head">
           <div>
             <h2>覆盖率与风险</h2>
-            <span>对比订单关联覆盖、反馈覆盖、合身率和低置信率</span>
+            <span>对比订单关联覆盖、反馈覆盖、合身率和低匹配把握率</span>
           </div>
         </div>
         <div ref="confidenceChartRef" class="analytics-page__chart" />
@@ -95,7 +95,7 @@
         <el-table-column label="合身率" min-width="95">
           <template #default="{ row }">{{ formatPercent(row.fitRate) }}</template>
         </el-table-column>
-        <el-table-column label="低置信率" min-width="105">
+        <el-table-column label="低匹配把握率" min-width="105">
           <template #default="{ row }">{{ formatPercent(row.lowConfidenceRate) }}</template>
         </el-table-column>
         <el-table-column label="反馈提交率" min-width="110">
@@ -107,7 +107,7 @@
         <el-table-column label="偏大偏小率" min-width="110">
           <template #default="{ row }">{{ formatPercent(row.sizeIssueRate) }}</template>
         </el-table-column>
-        <el-table-column prop="avgConfidenceScore" label="平均置信度" min-width="110" />
+        <el-table-column prop="avgConfidenceScore" label="平均匹配把握" min-width="110" />
       </el-table>
       <div class="analytics-page__diagnostics">
         <article v-for="item in experimentDiagnostics" :key="item.label" class="analytics-page__diagnostic">
@@ -175,7 +175,7 @@ const statCards = computed(() => [
     tone: 'blue',
   },
   {
-    label: '平均置信度',
+    label: '平均匹配把握',
     value: stats.value.avgConfidenceScore.toFixed(1),
     note: `${stats.value.lowConfidenceCount} 条低于 60 分`,
     tone: 'walnut',
@@ -253,7 +253,7 @@ function resetFilters() {
 function exportCsv() {
   downloadCsv(
     `recommendation_analytics_${dateRange.value[0]}_${dateRange.value[1]}.csv`,
-    ['类型', '日期', '学校', '商品', '实验组', '推荐次数', '关联订单数', '反馈数', '合身率', '低置信率', '反馈提交率', '推荐下单率', '偏大偏小率', '校准命中率', '校准应用率', '改荐率', '安全闸门跳过', '平均置信度'],
+    ['类型', '日期', '学校', '商品', '实验组', '推荐次数', '关联订单数', '反馈数', '合身率', '低匹配把握率', '反馈提交率', '推荐下单率', '偏大偏小率', '校准命中率', '校准应用率', '改荐率', '安全闸门跳过', '平均匹配把握'],
     [
       ...stats.value.trend.map((item) => [
         '日趋势',
@@ -394,7 +394,7 @@ function renderConfidenceChart() {
     grid: { left: 24, right: 24, top: 20, bottom: 28, containLabel: true },
     xAxis: {
       type: 'category',
-      data: ['订单关联覆盖率', '反馈覆盖率', '合身率', '低置信率'],
+      data: ['订单关联覆盖率', '反馈覆盖率', '合身率', '低匹配把握率'],
       axisLabel: { interval: 0 },
     },
     yAxis: {
