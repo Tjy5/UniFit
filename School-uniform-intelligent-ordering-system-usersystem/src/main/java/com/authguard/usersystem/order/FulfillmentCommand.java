@@ -1,0 +1,14 @@
+package com.authguard.usersystem.order;
+
+public enum FulfillmentCommand {
+    SIMULATE_PAYMENT_SUCCESS,
+    SIMULATE_PAYMENT_FAILURE,
+    CANCEL_UNPAID,
+    SHIP_ORDER,
+    CONFIRM_RECEIPT,
+    REQUEST_REFUND,
+    APPROVE_REFUND,
+    REJECT_REFUND,
+    LEGACY_STATUS_IMPORTED,
+    ORDER_CREATED
+}

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.authguard.usersystem.mapper.SGradeMapper">
+
+    <resultMap id="SGradeOptionResult" type="com.authguard.usersystem.entity.SGrade">
+        <id     property="gradeId"    column="grade_id"/>
+        <result property="gradeName"  column="grade_name"/>
+        <result property="schoolId"   column="school_id"/>
+    </resultMap>
+
+    <select id="selectGradeOptionsBySchoolId" resultMap="SGradeOptionResult">
+        SELECT
+        grade_id,
+        grade_name,
+        school_id
+        FROM
+        s_grades
+        WHERE
+        school_id = #{schoolId}
+        ORDER BY
+        grade_name
+    </select>
+
+    <select id="selectAllGradeOptions" resultMap="SGradeOptionResult">
+        SELECT
+            grade_id,
+            grade_name,
+            school_id
+        FROM
+            s_grades
+        ORDER BY
+            school_id, grade_name
+    </select>
+
+</mapper>

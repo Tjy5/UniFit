@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.authguard.usersystem.mapper.SSchoolMapper">
+
+    <resultMap id="SSchoolOptionResult" type="com.authguard.usersystem.entity.SSchool">
+        <id     property="schoolId"   column="school_id"/>
+        <result property="schoolName" column="school_name"/>
+    </resultMap>
+
+    <select id="selectAllSchoolOptions" resultMap="SSchoolOptionResult">
+        SELECT
+        school_id,
+        school_name
+        FROM
+        s_schools  <!-- 确保这是您数据库中正确的学校表名 -->
+        ORDER BY
+        school_name <!-- 或者按其他方式排序 -->
+    </select>
+
+</mapper>

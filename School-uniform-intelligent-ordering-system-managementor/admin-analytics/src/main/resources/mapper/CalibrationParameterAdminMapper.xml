@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suios.admin.analytics.mapper.CalibrationParameterAdminMapper">
+
+    <resultMap id="ParamListMap" type="com.suios.admin.analytics.dto.CalibrationParamListItemDto">
+        <id property="paramId" column="param_id"/>
+        <result property="scopeType" column="scope_type"/>
+        <result property="scopeId" column="scope_id"/>
+        <result property="scopeName" column="scope_name"/>
+        <result property="targetSizeId" column="target_size_id"/>
+        <result property="targetSizeName" column="target_size_name"/>
+        <result property="calibrationType" column="calibration_type"/>
+        <result property="adjustmentValue" column="adjustment_value"/>
+        <result property="isManual" column="is_manual"/>
+        <result property="enabled" column="enabled"/>
+        <result property="status" column="status"/>
+        <result property="sampleSize" column="sample_size"/>
+        <result property="uniqueUserCount" column="unique_user_count"/>
+        <result property="feedbackDistribution" column="feedback_distribution"/>
+        <result property="confidenceLevel" column="confidence_level"/>
+        <result property="effectiveFrom" column="effective_from"/>
+        <result property="effectiveUntil" column="effective_until"/>
+        <result property="version" column="version"/>
+        <result property="latestVersion" column="latest_version"/>
+        <result property="effectiveNow" column="effective_now"/>
+        <result property="shadowedByHigherVersion" column="shadowed_by_higher_version"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <resultMap id="ParamDetailMap" type="com.suios.admin.analytics.dto.CalibrationParamDetailDto" extends="ParamListMap"/>
+
+    <resultMap id="ParamVersionMap" type="com.suios.admin.analytics.dto.CalibrationParamVersionDto" extends="ParamListMap"/>
+
+    <resultMap id="ParamRecordMap" type="com.suios.admin.analytics.entity.CalibrationParamRecord">
+        <id property="paramId" column="param_id"/>
+        <result property="scopeType" column="scope_type"/>
+        <result property="scopeId" column="scope_id"/>
+        <result property="targetSizeId" column="target_size_id"/>
+        <result property="calibrationType" column="calibration_type"/>
+        <result property="adjustmentValue" column="adjustment_value"/>
+        <result property="isManual" column="is_manual"/>
+        <result property="enabled" column="enabled"/>
+        <result property="status" column="status"/>
+        <result property="sampleSize" column="sample_size"/>
+        <result property="uniqueUserCount" column="unique_user_count"/>
+        <result property="feedbackDistribution" column="feedback_distribution"/>
+        <result property="confidenceLevel" column="confidence_level"/>
+        <result property="effectiveFrom" column="effective_from"/>
+        <result property="effectiveUntil" column="effective_until"/>
+        <result property="version" column="version"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <resultMap id="AuditMap" type="com.suios.admin.analytics.dto.CalibrationAuditDto">
+        <id property="auditId" column="audit_id"/>
+        <result property="paramId" column="param_id"/>
+        <result property="action" column="action"/>
+        <result property="oldValue" column="old_value"/>
+        <result property="newValue" column="new_value"/>
+        <result property="reason" column="reason"/>
+        <result property="operator" column="operator"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <resultMap id="ImpactLogMap" type="com.suios.admin.analytics.dto.CalibrationImpactLogRow">
+        <id property="logId" column="log_id"/>
+        <result property="schoolId" column="school_id"/>
+        <result property="schoolName" column="school_name"/>
+        <result property="uniformId" column="uniform_id"/>
+        <result property="uniformName" column="uniform_name"/>
+        <result property="recommendedSizeId" column="recommended_size_id"/>
+        <result property="recommendedSizeName" column="recommended_size_name"/>
+        <result property="calibrationDetails" column="calibration_details"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <sql id="ParamRecordColumns">
+        param_id,
+        scope_type,
+        scope_id,
+        target_size_id,
+        calibration_type,
+        adjustment_value,
+        is_manual,
+        enabled,
+        status,
+        sample_size,
+        unique_user_count,
+        feedback_distribution,
+        confidence_level,
+        effective_from,
+        effective_until,
+        version,
+        create_by,
+        create_time,
+        update_by,
+        update_time
+    </sql>
+
+    <sql id="ParamSelectColumns">
+        cp.param_id,
+        cp.scope_type,
+        cp.scope_id,
+        CASE
+            WHEN cp.scope_type = 'SCHOOL' THEN COALESCE(ss.school_name, CONCAT('学校#', cp.scope_id))
+            WHEN cp.scope_type = 'PRODUCT' THEN COALESCE(su.name, CONCAT('商品#', cp.scope_id))
+            ELSE '全局'
+        END AS scope_name,
+        cp.target_size_id,
+        COALESCE(sz.size_name, CONCAT('尺码#', cp.target_size_id), '全部尺码') AS target_size_name,
+        cp.calibration_type,
+        cp.adjustment_value,
+        cp.is_manual,
+        cp.enabled,
+        cp.status,
+        cp.sample_size,
+        cp.unique_user_count,
+        cp.feedback_distribution,
+        cp.confidence_level,
+        cp.effective_from,
+        cp.effective_until,
+        cp.version,
+        CASE
+            WHEN cp.version = (
+                SELECT COALESCE(MAX(p2.version), 0)
+                FROM calibration_params p2
+                WHERE p2.scope_type = cp.scope_type
+                  AND (p2.scope_id = cp.scope_id OR (p2.scope_id IS NULL AND cp.scope_id IS NULL))
+                  AND (p2.target_size_id = cp.target_size_id OR (p2.target_size_id IS NULL AND cp.target_size_id IS NULL))
+                  AND p2.calibration_type = cp.calibration_type
+            ) THEN TRUE ELSE FALSE
+        END AS latest_version,
+        CASE
+            WHEN cp.enabled = TRUE
+             AND cp.effective_from &lt;= NOW()
+             AND (cp.effective_until IS NULL OR cp.effective_until &gt;= NOW())
+            THEN TRUE ELSE FALSE
+        END AS effective_now,
+        CASE
+            WHEN cp.enabled = TRUE
+             AND cp.effective_from &lt;= NOW()
+             AND (cp.effective_until IS NULL OR cp.effective_until &gt;= NOW())
+             AND EXISTS (
+                SELECT 1
+                FROM calibration_params newer
+                WHERE newer.scope_type = cp.scope_type
+                  AND (newer.scope_id = cp.scope_id OR (newer.scope_id IS NULL AND cp.scope_id IS NULL))
+                  AND (newer.target_size_id = cp.target_size_id OR (newer.target_size_id IS NULL AND cp.target_size_id IS NULL))
+                  AND newer.calibration_type = cp.calibration_type
+                  AND newer.enabled = TRUE
+                  AND newer.effective_from &lt;= NOW()
+                  AND (newer.effective_until IS NULL OR newer.effective_until &gt;= NOW())
+                  AND newer.version &gt; cp.version
+             )
+            THEN TRUE ELSE FALSE
+        END AS shadowed_by_higher_version,
+        cp.create_by,
+        cp.create_time,
+        cp.update_by,
+        cp.update_time
+    </sql>
+
+    <sql id="ParamJoins">
+        LEFT JOIN s_schools ss ON cp.scope_type = 'SCHOOL' AND cp.scope_id = CAST(ss.school_id AS CHAR)
+        LEFT JOIN s_uniform su ON cp.scope_type = 'PRODUCT' AND cp.scope_id = CAST(su.id AS CHAR)
+        LEFT JOIN s_sizes sz ON cp.target_size_id = sz.id
+    </sql>
+
+    <select id="selectParamPage" resultMap="ParamListMap">
+        SELECT <include refid="ParamSelectColumns"/>
+        FROM calibration_params cp
+        <include refid="ParamJoins"/>
+        <where>
+            <if test="scopeType != null and scopeType != ''">
+                AND cp.scope_type = #{scopeType}
+            </if>
+            <if test="scopeId != null and scopeId != ''">
+                AND cp.scope_id = #{scopeId}
+            </if>
+            <if test="targetSizeId != null">
+                AND cp.target_size_id = #{targetSizeId}
+            </if>
+            <if test="enabled != null">
+                AND cp.enabled = #{enabled}
+            </if>
+            <if test="status != null and status != ''">
+                AND cp.status = #{status}
+            </if>
+            <if test="confidenceLevel != null and confidenceLevel != ''">
+                AND cp.confidence_level = #{confidenceLevel}
+            </if>
+            <if test="version != null">
+                AND cp.version = #{version}
+            </if>
+        </where>
+        ORDER BY cp.update_time DESC, cp.create_time DESC, cp.param_id DESC
+    </select>
+
+    <select id="selectParamDetail" resultMap="ParamDetailMap">
+        SELECT <include refid="ParamSelectColumns"/>
+        FROM calibration_params cp
+        <include refid="ParamJoins"/>
+        WHERE cp.param_id = #{paramId}
+    </select>
+
+    <select id="selectParamRecord" resultMap="ParamRecordMap">
+        SELECT <include refid="ParamRecordColumns"/>
+        FROM calibration_params
+        WHERE param_id = #{paramId}
+    </select>
+
+    <select id="selectVersionsByIdentity" resultMap="ParamVersionMap">
+        SELECT <include refid="ParamSelectColumns"/>
+        FROM calibration_params cp
+        <include refid="ParamJoins"/>
+        WHERE EXISTS (
+            SELECT 1
+            FROM calibration_params source
+            WHERE source.param_id = #{paramId}
+              AND source.scope_type = cp.scope_type
+              AND (source.scope_id = cp.scope_id OR (source.scope_id IS NULL AND cp.scope_id IS NULL))
+              AND (source.target_size_id = cp.target_size_id OR (source.target_size_id IS NULL AND cp.target_size_id IS NULL))
+              AND source.calibration_type = cp.calibration_type
+        )
+        ORDER BY cp.version DESC, cp.param_id DESC
+    </select>
+
+    <select id="selectAuditHistoryByIdentity" resultMap="AuditMap">
+        SELECT ca.audit_id,
+               ca.param_id,
+               ca.action,
+               ca.old_value,
+               ca.new_value,
+               ca.reason,
+               ca.operator,
+               ca.create_time
+        FROM calibration_audit ca
+        INNER JOIN calibration_params cp ON cp.param_id = ca.param_id
+        WHERE EXISTS (
+            SELECT 1
+            FROM calibration_params source
+            WHERE source.param_id = #{paramId}
+              AND source.scope_type = cp.scope_type
+              AND (source.scope_id = cp.scope_id OR (source.scope_id IS NULL AND cp.scope_id IS NULL))
+              AND (source.target_size_id = cp.target_size_id OR (source.target_size_id IS NULL AND cp.target_size_id IS NULL))
+              AND source.calibration_type = cp.calibration_type
+        )
+        ORDER BY ca.create_time DESC, ca.audit_id DESC
+    </select>
+
+    <select id="selectLatestAuditRevision" resultType="java.lang.Long">
+        SELECT COALESCE(MAX(audit_id), 0)
+        FROM calibration_audit
+    </select>
+
+    <select id="selectLatestVersionByIdentity" resultType="java.lang.Integer">
+        SELECT COALESCE(MAX(version), 0)
+        FROM calibration_params
+        <where>
+            scope_type = #{scopeType}
+            <if test="scopeId == null">
+                AND scope_id IS NULL
+            </if>
+            <if test="scopeId != null">
+                AND scope_id = #{scopeId}
+            </if>
+            <if test="targetSizeId == null">
+                AND target_size_id IS NULL
+            </if>
+            <if test="targetSizeId != null">
+                AND target_size_id = #{targetSizeId}
+            </if>
+            AND calibration_type = #{calibrationType}
+        </where>
+    </select>
+
+    <select id="selectEffectiveRecordsByIdentity" resultMap="ParamRecordMap">
+        SELECT <include refid="ParamRecordColumns"/>
+        FROM calibration_params
+        <where>
+            scope_type = #{scopeType}
+            <if test="scopeId == null">
+                AND scope_id IS NULL
+            </if>
+            <if test="scopeId != null">
+                AND scope_id = #{scopeId}
+            </if>
+            <if test="targetSizeId == null">
+                AND target_size_id IS NULL
+            </if>
+            <if test="targetSizeId != null">
+                AND target_size_id = #{targetSizeId}
+            </if>
+            AND calibration_type = #{calibrationType}
+            AND enabled = TRUE
+            AND effective_from &lt;= #{now}
+            AND (effective_until IS NULL OR effective_until &gt;= #{now})
+        </where>
+        ORDER BY version DESC, param_id DESC
+    </select>
+
+    <insert id="insertParamRecord" parameterType="com.suios.admin.analytics.entity.CalibrationParamRecord" useGeneratedKeys="true" keyProperty="paramId">
+        INSERT INTO calibration_params (
+            scope_type,
+            scope_id,
+            target_size_id,
+            calibration_type,
+            adjustment_value,
+            is_manual,
+            enabled,
+            status,
+            sample_size,
+            unique_user_count,
+            feedback_distribution,
+            confidence_level,
+            effective_from,
+            effective_until,
+            version,
+            create_by,
+            create_time,
+            update_by,
+            update_time
+        ) VALUES (
+            #{scopeType},
+            #{scopeId},
+            #{targetSizeId},
+            #{calibrationType},
+            #{adjustmentValue},
+            #{isManual},
+            #{enabled},
+            #{status},
+            #{sampleSize},
+            #{uniqueUserCount},
+            #{feedbackDistribution},
+            #{confidenceLevel},
+            #{effectiveFrom},
+            #{effectiveUntil},
+            #{version},
+            #{createBy},
+            #{createTime},
+            #{updateBy},
+            #{updateTime}
+        )
+    </insert>
+
+    <update id="updateParamRecord" parameterType="com.suios.admin.analytics.entity.CalibrationParamRecord">
+        UPDATE calibration_params
+        SET scope_type = #{scopeType},
+            scope_id = #{scopeId},
+            target_size_id = #{targetSizeId},
+            calibration_type = #{calibrationType},
+            adjustment_value = #{adjustmentValue},
+            is_manual = #{isManual},
+            enabled = #{enabled},
+            status = #{status},
+            sample_size = #{sampleSize},
+            unique_user_count = #{uniqueUserCount},
+            feedback_distribution = #{feedbackDistribution},
+            confidence_level = #{confidenceLevel},
+            effective_from = #{effectiveFrom},
+            effective_until = #{effectiveUntil},
+            version = #{version},
+            update_by = #{updateBy},
+            update_time = #{updateTime}
+        WHERE param_id = #{paramId}
+    </update>
+
+    <insert id="insertAuditRecord" parameterType="com.suios.admin.analytics.entity.CalibrationAuditRecord" useGeneratedKeys="true" keyProperty="auditId">
+        INSERT INTO calibration_audit (
+            param_id,
+            action,
+            old_value,
+            new_value,
+            reason,
+            operator,
+            create_time
+        ) VALUES (
+            #{paramId},
+            #{action},
+            #{oldValue},
+            #{newValue},
+            #{reason},
+            #{operator},
+            #{createTime}
+        )
+    </insert>
+
+    <select id="selectImpactLogs" resultMap="ImpactLogMap">
+        SELECT rl.log_id,
+               rl.school_id,
+               COALESCE(ss.school_name, CONCAT('学校#', rl.school_id), '未关联学校') AS school_name,
+               rl.uniform_id,
+               COALESCE(su.name, CONCAT('商品#', rl.uniform_id), '未关联商品') AS uniform_name,
+               rl.recommended_size_id,
+               rl.recommended_size_name,
+               rl.calibration_details,
+               rl.create_time
+        FROM recommendation_log rl
+        LEFT JOIN s_schools ss ON ss.school_id = rl.school_id
+        LEFT JOIN s_uniform su ON su.id = rl.uniform_id
+        <where>
+            rl.calibration_details IS NOT NULL
+            AND rl.calibration_details != ''
+            <if test="schoolId != null">
+                AND rl.school_id = #{schoolId}
+            </if>
+            <if test="uniformId != null">
+                AND rl.uniform_id = #{uniformId}
+            </if>
+            <if test="startTime != null">
+                AND rl.create_time <![CDATA[>=]]> #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND rl.create_time <![CDATA[<=]]> #{endTime}
+            </if>
+            <if test="paramId != null">
+                AND rl.calibration_details LIKE CONCAT('%\"paramId\":', #{paramId}, '%')
+            </if>
+            <if test="version != null">
+                AND rl.calibration_details LIKE CONCAT('%\"version\":', #{version}, '%')
+            </if>
+        </where>
+        ORDER BY rl.create_time DESC, rl.log_id DESC
+        LIMIT #{limit}
+    </select>
+</mapper>

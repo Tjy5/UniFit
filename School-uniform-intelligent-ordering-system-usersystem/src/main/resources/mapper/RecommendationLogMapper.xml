@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.authguard.usersystem.mapper.RecommendationLogMapper">
+
+    <resultMap id="RecommendationLogMap" type="com.authguard.usersystem.entity.RecommendationLog">
+        <id property="logId" column="log_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="schoolId" column="school_id"/>
+        <result property="uniformId" column="uniform_id"/>
+        <result property="categoryKey" column="category_key"/>
+        <result property="recommendedSizeId" column="recommended_size_id"/>
+        <result property="recommendedSizeName" column="recommended_size_name"/>
+        <result property="orderItemId" column="order_item_id"/>
+        <result property="experimentKey" column="experiment_key"/>
+        <result property="experimentVariant" column="experiment_variant"/>
+        <result property="strategyVersion" column="strategy_version"/>
+        <result property="requestSource" column="request_source"/>
+        <result property="inputSummary" column="input_summary"/>
+        <result property="resultSummary" column="result_summary"/>
+        <result property="confidenceScore" column="confidence_score"/>
+        <result property="confidenceLevel" column="confidence_level"/>
+        <result property="calibrationApplied" column="calibration_applied"/>
+        <result property="calibrationDetails" column="calibration_details"/>
+        <result property="personalizationApplied" column="personalization_applied"/>
+        <result property="personalizationDetails" column="personalization_details"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <sql id="selectRecommendationLogColumns">
+        log_id,
+        user_id,
+        school_id,
+        uniform_id,
+        category_key,
+        recommended_size_id,
+        recommended_size_name,
+        order_item_id,
+        experiment_key,
+        experiment_variant,
+        strategy_version,
+        request_source,
+        input_summary,
+        result_summary,
+        confidence_score,
+        confidence_level,
+        calibration_applied,
+        calibration_details,
+        personalization_applied,
+        personalization_details,
+        create_by,
+        create_time
+    </sql>
+
+    <insert id="insert" parameterType="com.authguard.usersystem.entity.RecommendationLog" useGeneratedKeys="true" keyProperty="logId">
+        INSERT INTO recommendation_log (
+            user_id,
+            school_id,
+            uniform_id,
+            category_key,
+            recommended_size_id,
+            recommended_size_name,
+            order_item_id,
+            experiment_key,
+            experiment_variant,
+            strategy_version,
+            request_source,
+            input_summary,
+            result_summary,
+            confidence_score,
+            confidence_level,
+            calibration_applied,
+            calibration_details,
+            personalization_applied,
+            personalization_details,
+            create_by,
+            create_time
+        ) VALUES (
+            #{userId},
+            #{schoolId},
+            #{uniformId},
+            #{categoryKey},
+            #{recommendedSizeId},
+            #{recommendedSizeName},
+            #{orderItemId},
+            #{experimentKey},
+            #{experimentVariant},
+            #{strategyVersion},
+            #{requestSource},
+            #{inputSummary},
+            #{resultSummary},
+            #{confidenceScore},
+            #{confidenceLevel},
+            #{calibrationApplied},
+            #{calibrationDetails},
+            #{personalizationApplied},
+            #{personalizationDetails},
+            #{createBy},
+            #{createTime}
+        )
+    </insert>
+
+    <select id="selectByLogIdAndUserId" resultMap="RecommendationLogMap">
+        SELECT <include refid="selectRecommendationLogColumns"/>
+        FROM recommendation_log
+        WHERE log_id = #{logId}
+          AND user_id = #{userId}
+    </select>
+
+    <select id="selectByOrderItemId" resultMap="RecommendationLogMap">
+        SELECT <include refid="selectRecommendationLogColumns"/>
+        FROM recommendation_log
+        WHERE order_item_id = #{orderItemId}
+        ORDER BY create_time DESC, log_id DESC
+        LIMIT 1
+    </select>
+
+    <update id="updateOrderItemLink">
+        UPDATE recommendation_log
+        SET order_item_id = #{orderItemId}
+        WHERE log_id = #{logId}
+          AND user_id = #{userId}
+          AND (order_item_id IS NULL OR order_item_id = #{orderItemId})
+    </update>
+</mapper>

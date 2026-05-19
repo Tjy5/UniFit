@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.authguard.usersystem.mapper.SUniformMapper">
+
+    <resultMap id="SUniformResult" type="com.authguard.usersystem.entity.SUniform">
+        <id property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="schoolId"    column="school_id"    />
+        <result property="gradeId"     column="grade_id"     />
+        <result property="categoryKey" column="category_key" />
+        <result property="schoolName"  column="school_name_alias" />
+        <result property="gradeName"   column="grade_name_alias" />
+        <result property="intro" column="intro" />
+        <result property="image" column="image" />
+        <result property="price" column="price" />
+        <result property="status" column="status" />
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="updateBy" column="update_by" />
+        <result property="updateTime" column="update_time" />
+        <result property="remark" column="remark" />
+        <!-- ⭐ 新增字段的映射 -->
+        <result property="averageRating" column="average_rating"/>
+        <result property="reviewCount"   column="review_count"/>
+    </resultMap>
+
+    <sql id="selectSUniformWithDetailsVo">
+        SELECT
+            su.id, su.name, su.school_id, su.grade_id, su.category_key, su.intro, su.image, su.price, su.status,
+            su.create_by, su.create_time, su.update_by, su.update_time, su.remark,
+            s.school_name AS school_name_alias,
+            g.grade_name AS grade_name_alias,
+            -- ⭐ 在查询中包含新字段
+            su.average_rating,
+            su.review_count
+        FROM
+            s_uniform su
+                LEFT JOIN
+            s_schools s ON su.school_id = s.school_id
+                LEFT JOIN
+            s_grades g ON su.grade_id = g.grade_id
+    </sql>
+
+    <select id="selectAllActiveUniforms" resultMap="SUniformResult">
+        <include refid="selectSUniformWithDetailsVo"/>
+        WHERE su.status = 0
+    </select>
+
+    <select id="selectSUniformById" resultMap="SUniformResult">
+        <include refid="selectSUniformWithDetailsVo"/>
+        WHERE su.id = #{id}
+    </select>
+
+    <select id="selectSUniformByIds" resultMap="SUniformResult">
+        <include refid="selectSUniformWithDetailsVo"/>
+        WHERE su.id IN
+        <foreach item="item" collection="ids" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <!-- ⭐ 新增方法的SQL实现 -->
+    <update id="updateUniformRatingAndCount">
+        UPDATE s_uniform
+        SET
+            average_rating = #{averageRating},
+            review_count = #{reviewCount},
+            update_time = NOW() --  同时更新校服记录的更新时间
+        WHERE id = #{uniformId}
+    </update>
+
+    <update id="updateUniformCategoryKey">
+        UPDATE s_uniform
+        SET category_key = #{categoryKey},
+            update_time = NOW()
+        WHERE id = #{uniformId}
+    </update>
+
+</mapper>

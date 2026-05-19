@@ -1,0 +1,11 @@
+package com.suios.admin.common.page;
+
+import java.util.List;
+
+public record PageResult<T>(
+        List<T> records,
+        long total,
+        long pageNum,
+        long pageSize
+) {
+}

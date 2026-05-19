@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.authguard.usersystem.mapper.UserMessageMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="UserMessageMap" type="com.authguard.usersystem.entity.UserMessage">
+        <id property="messageId" column="message_id" />
+        <result property="messageUserId" column="message_user_id" />
+        <result property="messageUserName" column="message_user_name" />
+        <result property="messageUserAge" column="message_user_age" />
+        <result property="messageUserSex" column="message_user_sex" />
+        <result property="messageUserAddress" column="message_user_address" />
+        <result property="height" column="height" />
+        <result property="weight" column="weight" />
+        <result property="chest" column="chest" />
+        <result property="waist" column="waist" />
+        <result property="hip" column="hip" />
+        <result property="shoulder" column="shoulder" />
+        <result property="schoolId" column="school_id" />
+        <result property="gradeId" column="grade_id" />
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="updateBy" column="update_by" />
+        <result property="updateTime" column="update_time" />
+        <result property="schoolName"  column="school_name_alias" />
+        <result property="gradeName"   column="grade_name_alias" />
+    </resultMap>
+
+    <!-- 根据 message_user_id 查询用户信息 (包含学校和年级名称) -->
+    <select id="selectByMessageUserId" resultMap="UserMessageMap">
+        SELECT
+            um.*,
+            s.school_name as school_name_alias,
+            g.grade_name as grade_name_alias
+        FROM
+            user_message um
+                LEFT JOIN
+            s_schools s ON um.school_id = s.school_id
+                LEFT JOIN
+            s_grades g ON um.grade_id = g.grade_id
+        WHERE
+            um.message_user_id = #{messageUserId}
+    </select>
+
+    <!-- 插入用户信息 -->
+    <insert id="insertUserMessage" parameterType="com.authguard.usersystem.entity.UserMessage" useGeneratedKeys="true" keyProperty="messageId">
+        INSERT INTO user_message (
+        message_user_id,
+        message_user_name,
+        message_user_age,
+        message_user_sex,
+        message_user_address,
+        height,
+        weight,
+        chest,
+        waist,
+        hip,
+        shoulder,
+        school_id,
+        grade_id,
+        create_by,
+        create_time,
+        update_by,
+        update_time
+        ) VALUES (
+        #{messageUserId},
+        #{messageUserName},
+        #{messageUserAge},
+        #{messageUserSex},
+        #{messageUserAddress},
+        #{height},
+        #{weight},
+        #{chest},
+        #{waist},
+        #{hip},
+        #{shoulder},
+        #{schoolId},
+        #{gradeId},
+        #{createBy},
+        #{createTime},
+        #{updateBy},
+        #{updateTime}
+        )
+    </insert>
+
+    <!-- 更新用户信息 -->
+    <update id="updateUserMessage" parameterType="com.authguard.usersystem.entity.UserMessage">
+        UPDATE user_message
+        SET
+        message_user_name = #{messageUserName},
+        message_user_age = #{messageUserAge},
+        message_user_sex = #{messageUserSex},
+        message_user_address = #{messageUserAddress},
+        height = #{height},
+        weight = #{weight},
+        chest = #{chest},
+        waist = #{waist},
+        hip = #{hip},
+        shoulder = #{shoulder},
+        school_id = #{schoolId},
+        grade_id = #{gradeId},
+        update_by = #{updateBy},
+        update_time = #{updateTime}
+        WHERE message_id = #{messageId}
+    </update>
+
+</mapper>

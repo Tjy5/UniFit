@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.authguard.usersystem.mapper.ISAddressMapper">
+
+    <!-- 复用 SOrdersMapper.xml 或重新定义 SAddress ResultMap -->
+    <resultMap id="SAddressBaseMap" type="com.authguard.usersystem.entity.SAddress">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="recipientName" column="recipient_name"/>
+        <result property="phoneNumber" column="phone_number"/>
+        <result property="province" column="province"/>
+        <result property="city" column="city"/>
+        <result property="district" column="district"/>
+        <result property="streetAddress" column="street_address"/>
+        <result property="isDefault" column="is_default" javaType="java.lang.Boolean" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="selectAddressColumns">
+        id, user_id, recipient_name, phone_number, province, city, district, street_address, is_default
+    </sql>
+
+    <select id="selectById" resultMap="SAddressBaseMap">
+        SELECT <include refid="selectAddressColumns"/>
+        FROM s_address
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByUserId" resultMap="SAddressBaseMap">
+        SELECT <include refid="selectAddressColumns"/>
+        FROM s_address
+        WHERE user_id = #{userId}
+        ORDER BY is_default DESC, id DESC  <!-- 默认地址排在前面 -->
+    </select>
+
+    <insert id="insertAddress" parameterType="com.authguard.usersystem.entity.SAddress"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO s_address (
+            user_id, recipient_name, phone_number, province, city, district, street_address, is_default
+        ) VALUES (
+                     #{userId}, #{recipientName}, #{phoneNumber}, #{province}, #{city}, #{district}, #{streetAddress}, #{isDefault, javaType=java.lang.Boolean, jdbcType=TINYINT}
+                 )
+    </insert>
+
+    <update id="updateAddress" parameterType="com.authguard.usersystem.entity.SAddress">
+        UPDATE s_address
+        <set>
+            <if test="recipientName != null and recipientName != ''">recipient_name = #{recipientName},</if>
+            <if test="phoneNumber != null and phoneNumber != ''">phone_number = #{phoneNumber},</if>
+            <if test="province != null and province != ''">province = #{province},</if>
+            <if test="city != null and city != ''">city = #{city},</if>
+            <if test="district != null and district != ''">district = #{district},</if>
+            <if test="streetAddress != null and streetAddress != ''">street_address = #{streetAddress},</if>
+            <if test="isDefault != null">is_default = #{isDefault, javaType=java.lang.Boolean, jdbcType=TINYINT},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteByIdAndUserId">
+        DELETE FROM s_address
+        WHERE id = #{id} AND user_id = #{userId}
+    </delete>
+
+    <update id="unsetDefaultForUser">
+        UPDATE s_address
+        SET is_default = 0
+        WHERE user_id = #{userId} AND is_default = 1
+    </update>
+
+    <update id="updateDefaultStatusByIdAndUserId">
+        UPDATE s_address
+        SET is_default = #{isDefault, javaType=java.lang.Boolean, jdbcType=TINYINT}
+        WHERE id = #{id} AND user_id = #{userId}
+    </update>
+
+</mapper>

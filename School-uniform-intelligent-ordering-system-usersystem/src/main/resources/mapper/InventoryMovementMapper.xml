@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.authguard.usersystem.mapper.InventoryMovementMapper">
+
+    <resultMap id="InventoryMovementMap" type="com.authguard.usersystem.entity.InventoryMovement">
+        <id property="movementId" column="movement_id"/>
+        <result property="skuId" column="sku_id"/>
+        <result property="movementType" column="movement_type"/>
+        <result property="quantity" column="quantity"/>
+        <result property="beforeStockQuantity" column="before_stock_quantity"/>
+        <result property="afterStockQuantity" column="after_stock_quantity"/>
+        <result property="beforeReservedQuantity" column="before_reserved_quantity"/>
+        <result property="afterReservedQuantity" column="after_reserved_quantity"/>
+        <result property="relatedOrderId" column="related_order_id"/>
+        <result property="relatedOrderItemId" column="related_order_item_id"/>
+        <result property="actorType" column="actor_type"/>
+        <result property="actorId" column="actor_id"/>
+        <result property="reason" column="reason"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.authguard.usersystem.entity.InventoryMovement" useGeneratedKeys="true" keyProperty="movementId">
+        INSERT INTO s_inventory_movements (
+            sku_id,
+            movement_type,
+            quantity,
+            before_stock_quantity,
+            after_stock_quantity,
+            before_reserved_quantity,
+            after_reserved_quantity,
+            related_order_id,
+            related_order_item_id,
+            actor_type,
+            actor_id,
+            reason,
+            create_time
+        ) VALUES (
+            #{skuId},
+            #{movementType},
+            #{quantity},
+            #{beforeStockQuantity},
+            #{afterStockQuantity},
+            #{beforeReservedQuantity},
+            #{afterReservedQuantity},
+            #{relatedOrderId},
+            #{relatedOrderItemId},
+            #{actorType},
+            #{actorId},
+            #{reason},
+            #{createTime}
+        )
+    </insert>
+
+    <select id="countByOrderAndType" resultType="long">
+        SELECT COUNT(1)
+        FROM s_inventory_movements
+        WHERE related_order_id = #{orderId}
+          AND movement_type = #{movementType}
+    </select>
+
+    <select id="selectByOrderAndType" resultMap="InventoryMovementMap">
+        SELECT *
+        FROM s_inventory_movements
+        WHERE related_order_id = #{orderId}
+          AND movement_type = #{movementType}
+        ORDER BY movement_id ASC
+    </select>
+</mapper>

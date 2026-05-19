@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.authguard.usersystem.mapper.ISReviewMapper">
+
+    <resultMap id="SReviewResult" type="com.authguard.usersystem.entity.SReview">
+        <id     property="reviewId"        column="review_id"/>
+        <result property="userId"          column="user_id"/>
+        <result property="uniformId"       column="uniform_id"/>
+        <result property="orderItemId"     column="order_item_id"/>
+        <result property="rating"          column="rating"/>
+        <result property="content"         column="content"/>
+        <result property="isAnonymous"     column="is_anonymous"/>
+        <result property="createTime"      column="create_time"/>
+    </resultMap>
+
+    <sql id="selectReviewColumns">
+        review_id, user_id, uniform_id, order_item_id,
+        rating, content, is_anonymous, create_time
+    </sql>
+
+    <insert id="insertReview" parameterType="com.authguard.usersystem.entity.SReview" useGeneratedKeys="true" keyProperty="reviewId">
+        INSERT INTO s_reviews (
+            user_id, uniform_id, order_item_id,
+            rating, content, is_anonymous, create_time
+        ) VALUES (
+                     #{userId}, #{uniformId}, #{orderItemId},
+                     #{rating}, #{content}, #{isAnonymous}, NOW()
+                 )
+    </insert>
+
+    <select id="selectReviewsByUserId" resultMap="SReviewResult">
+        SELECT <include refid="selectReviewColumns"/>
+        FROM s_reviews
+        WHERE user_id = #{userId}
+        ORDER BY create_time DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <select id="countReviewsByUserId" resultType="long">
+        SELECT COUNT(*)
+        FROM s_reviews
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="selectReviewById" resultMap="SReviewResult">
+        SELECT <include refid="selectReviewColumns"/>
+        FROM s_reviews
+        WHERE review_id = #{reviewId}
+    </select>
+
+    <update id="updateReview">
+        UPDATE s_reviews
+        SET rating = #{rating},
+            content = #{content},
+            is_anonymous = #{isAnonymous}
+        WHERE review_id = #{reviewId}
+    </update>
+
+    <delete id="deleteReviewById">
+        DELETE FROM s_reviews
+        WHERE review_id = #{reviewId}
+    </delete>
+
+    <select id="selectReviewsByUniformId" resultMap="SReviewResult">
+        SELECT <include refid="selectReviewColumns"/>
+        FROM s_reviews
+        WHERE uniform_id = #{uniformId}
+        ORDER BY create_time DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <select id="countReviewsByUniformId" resultType="long">
+        SELECT COUNT(*)
+        FROM s_reviews
+        WHERE uniform_id = #{uniformId}
+    </select>
+
+    <select id="checkIfUserReviewedOrderItem" resultType="int">
+        SELECT COUNT(*)
+        FROM s_reviews
+        WHERE user_id = #{userId} AND order_item_id = #{orderItemId}
+    </select>
+
+</mapper>

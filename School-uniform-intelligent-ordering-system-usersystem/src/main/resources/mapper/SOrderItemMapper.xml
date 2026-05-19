@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.authguard.usersystem.mapper.SOrderItemMapper">
+
+    <resultMap id="SOrderItemMap" type="com.authguard.usersystem.entity.SOrderItem">
+        <id property="orderItemId" column="order_item_id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="uniformId" column="uniform_id"/>
+        <result property="sizeId" column="size_id"/>
+        <result property="uniformNameSnapshot" column="uniform_name_snapshot"/>
+        <result property="sizeNameSnapshot" column="size_name_snapshot"/>
+        <result property="quantity" column="quantity"/>
+        <result property="unitPriceSnapshot" column="unit_price_snapshot"/>
+        <result property="itemTotalPrice" column="item_total_price"/>
+        <result property="imageSnapshot" column="image_snapshot"/>
+        <!-- ⭐ 新增 review_id 的映射 -->
+        <result property="reviewId" column="review_id"/>
+    </resultMap>
+
+    <sql id="selectSOrderItemColumnsBase">
+        order_item_id, order_id, uniform_id, size_id, uniform_name_snapshot, size_name_snapshot,
+        quantity, unit_price_snapshot, item_total_price, image_snapshot
+    </sql>
+
+    <sql id="selectSOrderItemColumnsWithReview">
+        <include refid="selectSOrderItemColumnsBase"/>, review_id
+    </sql>
+
+
+    <insert id="insert" parameterType="com.authguard.usersystem.entity.SOrderItem" useGeneratedKeys="true" keyProperty="orderItemId">
+        INSERT INTO s_order_items (order_id, uniform_id, size_id, uniform_name_snapshot, size_name_snapshot, quantity, unit_price_snapshot, item_total_price, image_snapshot)
+        VALUES (#{orderId}, #{uniformId}, #{sizeId}, #{uniformNameSnapshot}, #{sizeNameSnapshot}, #{quantity}, #{unitPriceSnapshot}, #{itemTotalPrice}, #{imageSnapshot})
+    </insert>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO s_order_items (order_id, uniform_id, size_id, uniform_name_snapshot, size_name_snapshot, quantity, unit_price_snapshot, item_total_price, image_snapshot)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.orderId}, #{item.uniformId}, #{item.sizeId}, #{item.uniformNameSnapshot}, #{item.sizeNameSnapshot}, #{item.quantity}, #{item.unitPriceSnapshot}, #{item.itemTotalPrice}, #{item.imageSnapshot})
+        </foreach>
+    </insert>
+
+    <select id="selectByOrderId" resultMap="SOrderItemMap">
+        SELECT <include refid="selectSOrderItemColumnsWithReview"/>
+        FROM s_order_items WHERE order_id = #{orderId}
+    </select>
+
+    <!-- ⭐ 新增方法的SQL实现 -->
+    <select id="selectOrderItemById" resultMap="SOrderItemMap">
+        SELECT <include refid="selectSOrderItemColumnsWithReview"/>
+        FROM s_order_items
+        WHERE order_item_id = #{orderItemId}
+    </select>
+
+    <update id="updateOrderItemReviewId">
+        UPDATE s_order_items
+        SET review_id = #{reviewId}
+        WHERE order_item_id = #{orderItemId}
+    </update>
+
+</mapper>

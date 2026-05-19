@@ -1,0 +1,15 @@
+{
+  "name": "suios-smoke-tests",
+  "private": true,
+  "scripts": {
+    "verify": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/verify-all.ps1",
+    "verify:full": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/verify-all.ps1 -IncludeFullChainE2E",
+    "test:dev-console": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/test-dev-console.ps1",
+    "test:e2e:full-chain": "node ./tests/e2e/full-chain-e2e.mjs",
+    "test:smoke": "node ./scripts/run-local-playwright.cjs",
+    "test:smoke:headed": "node ./scripts/run-local-playwright.cjs --headed"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2"
+  }
+}

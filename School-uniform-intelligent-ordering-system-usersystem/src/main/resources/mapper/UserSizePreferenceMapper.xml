@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.authguard.usersystem.mapper.UserSizePreferenceMapper">
+
+    <resultMap id="UserSizePreferenceProfileMap" type="com.authguard.usersystem.entity.UserSizePreferenceProfile">
+        <id property="profileId" column="profile_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="categoryKey" column="category_key"/>
+        <result property="explicitPreference" column="explicit_preference"/>
+        <result property="learnedDirection" column="learned_direction"/>
+        <result property="confidenceLevel" column="confidence_level"/>
+        <result property="confidenceScore" column="confidence_score"/>
+        <result property="sampleCount" column="sample_count"/>
+        <result property="fitCount" column="fit_count"/>
+        <result property="tooSmallCount" column="too_small_count"/>
+        <result property="tooLargeCount" column="too_large_count"/>
+        <result property="looseSignalCount" column="loose_signal_count"/>
+        <result property="slimSignalCount" column="slim_signal_count"/>
+        <result property="standardSignalCount" column="standard_signal_count"/>
+        <result property="sourceSummary" column="source_summary"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <resultMap id="UserSizePreferenceEventMap" type="com.authguard.usersystem.entity.UserSizePreferenceEvent">
+        <id property="eventId" column="event_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="orderItemId" column="order_item_id"/>
+        <result property="feedbackId" column="feedback_id"/>
+        <result property="uniformId" column="uniform_id"/>
+        <result property="categoryKey" column="category_key"/>
+        <result property="recommendedSize" column="recommended_size"/>
+        <result property="purchasedSize" column="purchased_size"/>
+        <result property="satisfaction" column="satisfaction"/>
+        <result property="issueParts" column="issue_parts"/>
+        <result property="directionDelta" column="direction_delta"/>
+        <result property="sourceType" column="source_type"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <resultMap id="SizePreferenceBackfillRecordMap" type="com.authguard.usersystem.dto.SizePreferenceBackfillRecord">
+        <result property="userId" column="user_id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="orderItemId" column="order_item_id"/>
+        <result property="feedbackId" column="feedback_id"/>
+        <result property="uniformId" column="uniform_id"/>
+        <result property="categoryKey" column="category_key"/>
+        <result property="recommendedSize" column="recommended_size"/>
+        <result property="purchasedSize" column="purchased_size"/>
+        <result property="satisfaction" column="satisfaction"/>
+        <result property="issueParts" column="issue_parts"/>
+        <result property="feedbackTime" column="feedback_time"/>
+    </resultMap>
+
+    <select id="selectProfile" resultMap="UserSizePreferenceProfileMap">
+        SELECT *
+        FROM user_size_preference_profile
+        WHERE user_id = #{userId}
+          AND category_key = #{categoryKey}
+    </select>
+
+    <insert id="upsertProfile" parameterType="com.authguard.usersystem.entity.UserSizePreferenceProfile" useGeneratedKeys="true" keyProperty="profileId">
+        INSERT INTO user_size_preference_profile (
+            user_id,
+            category_key,
+            explicit_preference,
+            learned_direction,
+            confidence_level,
+            confidence_score,
+            sample_count,
+            fit_count,
+            too_small_count,
+            too_large_count,
+            loose_signal_count,
+            slim_signal_count,
+            standard_signal_count,
+            source_summary,
+            create_by,
+            create_time,
+            update_by,
+            update_time
+        ) VALUES (
+            #{userId},
+            #{categoryKey},
+            #{explicitPreference},
+            #{learnedDirection},
+            #{confidenceLevel},
+            #{confidenceScore},
+            #{sampleCount},
+            #{fitCount},
+            #{tooSmallCount},
+            #{tooLargeCount},
+            #{looseSignalCount},
+            #{slimSignalCount},
+            #{standardSignalCount},
+            #{sourceSummary},
+            #{createBy},
+            #{createTime},
+            #{updateBy},
+            #{updateTime}
+        )
+        ON DUPLICATE KEY UPDATE
+            explicit_preference = VALUES(explicit_preference),
+            learned_direction = VALUES(learned_direction),
+            confidence_level = VALUES(confidence_level),
+            confidence_score = VALUES(confidence_score),
+            sample_count = VALUES(sample_count),
+            fit_count = VALUES(fit_count),
+            too_small_count = VALUES(too_small_count),
+            too_large_count = VALUES(too_large_count),
+            loose_signal_count = VALUES(loose_signal_count),
+            slim_signal_count = VALUES(slim_signal_count),
+            standard_signal_count = VALUES(standard_signal_count),
+            source_summary = VALUES(source_summary),
+            update_by = VALUES(update_by),
+            update_time = VALUES(update_time)
+    </insert>
+
+    <insert id="upsertEvent" parameterType="com.authguard.usersystem.entity.UserSizePreferenceEvent" useGeneratedKeys="true" keyProperty="eventId">
+        INSERT INTO user_size_preference_event (
+            user_id,
+            order_id,
+            order_item_id,
+            feedback_id,
+            uniform_id,
+            category_key,
+            recommended_size,
+            purchased_size,
+            satisfaction,
+            issue_parts,
+            direction_delta,
+            source_type,
+            create_by,
+            create_time,
+            update_by,
+            update_time
+        ) VALUES (
+            #{userId},
+            #{orderId},
+            #{orderItemId},
+            #{feedbackId},
+            #{uniformId},
+            #{categoryKey},
+            #{recommendedSize},
+            #{purchasedSize},
+            #{satisfaction},
+            #{issueParts},
+            #{directionDelta},
+            #{sourceType},
+            #{createBy},
+            #{createTime},
+            #{updateBy},
+            #{updateTime}
+        )
+        ON DUPLICATE KEY UPDATE
+            user_id = VALUES(user_id),
+            order_id = VALUES(order_id),
+            feedback_id = VALUES(feedback_id),
+            uniform_id = VALUES(uniform_id),
+            category_key = VALUES(category_key),
+            recommended_size = VALUES(recommended_size),
+            purchased_size = VALUES(purchased_size),
+            satisfaction = VALUES(satisfaction),
+            issue_parts = VALUES(issue_parts),
+            direction_delta = VALUES(direction_delta),
+            source_type = VALUES(source_type),
+            update_by = VALUES(update_by),
+            update_time = VALUES(update_time)
+    </insert>
+
+    <select id="selectEventsByUserAndCategory" resultMap="UserSizePreferenceEventMap">
+        SELECT *
+        FROM user_size_preference_event
+        WHERE user_id = #{userId}
+          AND category_key = #{categoryKey}
+        ORDER BY COALESCE(update_time, create_time) DESC, event_id DESC
+    </select>
+
+    <select id="selectCompletedFeedbackBackfillRecords" resultMap="SizePreferenceBackfillRecordMap">
+        SELECT
+            sf.user_id,
+            sf.order_id,
+            sf.order_item_id,
+            sf.feedback_id,
+            COALESCE(rl.uniform_id, soi.uniform_id) AS uniform_id,
+            COALESCE(rl.category_key, su.category_key, 'GENERAL') AS category_key,
+            COALESCE(rl.recommended_size_name, sf.recommended_size) AS recommended_size,
+            COALESCE(sf.purchased_size, soi.size_name_snapshot) AS purchased_size,
+            sf.satisfaction,
+            sf.issue_parts,
+            COALESCE(sf.update_time, sf.create_time) AS feedback_time
+        FROM size_feedback sf
+        INNER JOIN s_orders so ON so.id = sf.order_id
+        INNER JOIN s_order_items soi ON soi.order_item_id = sf.order_item_id
+        LEFT JOIN recommendation_log rl ON rl.order_item_id = sf.order_item_id
+        LEFT JOIN s_uniform su ON su.id = COALESCE(rl.uniform_id, soi.uniform_id)
+        WHERE so.status = 3
+          AND COALESCE(so.payment_status, '') NOT IN ('REFUNDING', 'REFUNDED', 'CLOSED')
+          AND COALESCE(so.shipping_status, '') NOT IN ('RETURN_REQUESTED', 'RETURNED')
+    </select>
+</mapper>

@@ -1,0 +1,28 @@
+{
+  "name": "user-vue",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 3001 --open",
+    "build": "vite build",
+    "lint:deep-selectors": "node scripts/check-deep-selectors.mjs",
+    "lint:recommendation-sources": "node scripts/check-recommendation-sources.mjs",
+    "verify:recommendation-entry-points": "node scripts/verify-recommendation-entry-points.mjs",
+    "preview": "vite preview --host 127.0.0.1 --port 4173"
+  },
+  "dependencies": {
+    "axios": "^1.7.9",
+    "radix-vue": "^1.9.17",
+    "vue": "^3.5.31",
+    "vue-router": "^4.6.4",
+    "vue-sonner": "^2.0.9"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.4",
+    "autoprefixer": "^10.4.27",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^3.4.19",
+    "vite": "^5.4.21"
+  }
+}

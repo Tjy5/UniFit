@@ -1,0 +1,57 @@
+server:
+  port: 9091
+
+spring:
+  application:
+    name: admin-api
+  datasource:
+    url: ${ADMIN_DB_URL:jdbc:mysql://localhost:3306/suios?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai}
+    username: ${ADMIN_DB_USERNAME:dev_only_admin}
+    password: ${ADMIN_DB_PASSWORD:dev_only_password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
+  jackson:
+    time-zone: Asia/Shanghai
+    serialization:
+      write-dates-as-timestamps: false
+    default-property-inclusion: non_null
+
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*.xml
+  type-aliases-package: com.suios.admin
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      id-type: auto
+
+jwt:
+  secret: ${ADMIN_JWT_SECRET:dev-only-admin-jwt-secret-change-me-before-production}
+  expiration: ${ADMIN_JWT_EXPIRATION:86400000}
+
+upload:
+  path: ${ADMIN_UPLOAD_PATH:D:/suios/uploads}
+  url-prefix: /upload
+  legacy-path: ${ADMIN_UPLOAD_LEGACY_PATH:D:/ruoyi/uploadPath/upload}
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+logging:
+  level:
+    com.suios.admin: info
+
+analytics:
+  max-page-size: 200
+  export-max-rows: 10000
+  max-funnel-range-days: 90
+
+funnel:
+  session-inactivity-gap-minutes: 30
+  stalled-cart-threshold-hours: 48

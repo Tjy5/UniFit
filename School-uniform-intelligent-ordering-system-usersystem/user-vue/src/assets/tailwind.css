@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-sans: theme('fontFamily.body');
+    --app-bg: theme('colors.ui.bg');
+    --surface: theme('colors.ui.surface');
+    --surface-strong: theme('colors.ui.surface');
+    --surface-muted: theme('colors.ui.muted');
+    --surface-subtle: theme('colors.ui.subtle');
+    --line: theme('colors.ui.line');
+    --line-strong: #b7c4d4;
+    --text-primary: theme('colors.ui.text');
+    --text-secondary: theme('colors.ui.secondary');
+    --text-muted: theme('colors.ui.mutedText');
+    --brand: theme('colors.ui.primary');
+    --brand-hover: theme('colors.ui.primaryHover');
+    --brand-soft: theme('colors.ui.primarySoft');
+    --success: theme('colors.ui.success');
+    --warning: theme('colors.ui.warning');
+    --danger: theme('colors.ui.danger');
+    --info: theme('colors.ui.info');
+    --mcm-beige: theme('colors.mcm.beige');
+    --mcm-white: #fff;
+    --mcm-brown: theme('colors.mcm.brown');
+    --mcm-orange: theme('colors.mcm.orange');
+    --mcm-mustard: theme('colors.mcm.mustard');
+    --mcm-olive: theme('colors.mcm.olive');
+    --mcm-walnut: theme('colors.mcm.walnut');
+    --mcm-teak: theme('colors.mcm.teak');
+    --mcm-blue-gray: theme('colors.mcm.blue-gray');
+    --mcm-coral: theme('colors.mcm.coral');
+    --mcm-cream: theme('colors.mcm.cream');
+    --mcm-sand: theme('colors.mcm.sand');
+    --mcm-line: theme('colors.mcm.line');
+    --mcm-line-strong: theme('colors.mcm.line-strong');
+    --mcm-text: theme('colors.mcm.text');
+    --mcm-text-soft: theme('colors.mcm.text-soft');
+    --mcm-text-faint: theme('colors.mcm.text-faint');
+    --mcm-surface: theme('colors.mcm.surface');
+    --mcm-surface-strong: theme('colors.mcm.surface-strong');
+    --mcm-surface-muted: theme('colors.mcm.surface-muted');
+    --mcm-shadow-soft: theme('boxShadow.mcm-soft');
+    --mcm-shadow-md: theme('boxShadow.mcm-md');
+    --mcm-shadow-lg: theme('boxShadow.mcm-lg');
+    --mcm-radius-xs: theme('borderRadius.mcm-xs');
+    --mcm-radius-sm: theme('borderRadius.mcm-sm');
+    --mcm-radius-md: theme('borderRadius.mcm-md');
+    --mcm-radius-lg: theme('borderRadius.mcm-lg');
+    --mcm-radius-xl: theme('borderRadius.mcm-xl');
+    --mcm-font-family: theme('fontFamily.body');
+    --navbar-height: 76px;
+  }
+
+  html {
+    font-family: var(--font-sans);
+  }
+
+  body {
+    @apply m-0;
+  }
+}

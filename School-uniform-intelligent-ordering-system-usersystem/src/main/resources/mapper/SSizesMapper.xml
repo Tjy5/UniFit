@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.authguard.usersystem.mapper.SSizesMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="SSizesMap" type="com.authguard.usersystem.entity.SSizes"> <!-- id 保持为 SSizesMap -->
+        <id property="id" column="id" />
+        <result property="sizeName" column="size_name" />
+        <result property="minHeight" column="min_height" />
+        <result property="maxHeight" column="max_height" />
+        <result property="minWeight" column="min_weight" />
+        <result property="maxWeight" column="max_weight" />
+        <result property="minChest" column="min_chest" />
+        <result property="maxChest" column="max_chest" />
+        <result property="minWaist" column="min_waist" />
+        <result property="maxWaist" column="max_waist" />
+        <result property="minHip" column="min_hip" />
+        <result property="maxHip" column="max_hip" />
+        <result property="minShoulder" column="min_shoulder" />
+        <result property="maxShoulder" column="max_shoulder" />
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="updateBy" column="update_by" />
+        <result property="updateTime" column="update_time" />
+        <result property="remark" column="remark" />
+    </resultMap>
+
+    <sql id="selectSSizesColumns">
+        id,
+        size_name,
+        min_height,
+        max_height,
+        min_weight,
+        max_weight,
+        min_chest,
+        max_chest,
+        min_waist,
+        max_waist,
+        min_hip,
+        max_hip,
+        min_shoulder,
+        max_shoulder,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        remark
+    </sql>
+
+    <!-- 查询所有尺码信息 -->
+    <select id="selectAllSizes" resultMap="SSizesMap"> <!-- 这里保持不变 -->
+        SELECT <include refid="selectSSizesColumns"/>
+        FROM s_sizes
+        ORDER BY min_height ASC, min_weight ASC, id ASC
+    </select>
+
+    <!-- 新增 selectSSizesById 的 SQL -->
+    <select id="selectSSizesById" resultMap="SSizesMap"> <!-- 这里修改了 resultMap -->
+        SELECT <include refid="selectSSizesColumns"/>
+        FROM s_sizes
+        WHERE id = #{id}
+    </select>
+
+    <!-- 新增 selectSSizesByIds 的 SQL -->
+    <select id="selectSSizesByIds" resultMap="SSizesMap"> <!-- 这里修改了 resultMap -->
+        SELECT <include refid="selectSSizesColumns"/>
+        FROM s_sizes
+        WHERE id IN
+        <foreach item="item" collection="ids" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+</mapper>

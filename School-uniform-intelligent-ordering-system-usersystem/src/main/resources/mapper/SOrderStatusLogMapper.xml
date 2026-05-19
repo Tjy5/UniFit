@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.authguard.usersystem.mapper.SOrderStatusLogMapper">
+
+    <resultMap id="SOrderStatusLogMap" type="com.authguard.usersystem.entity.SOrderStatusLog">
+        <id property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="eventType" column="event_type"/>
+        <result property="actorType" column="actor_type"/>
+        <result property="actorId" column="actor_id"/>
+        <result property="fromOrderStatus" column="from_order_status"/>
+        <result property="toOrderStatus" column="to_order_status"/>
+        <result property="fromPaymentStatus" column="from_payment_status"/>
+        <result property="toPaymentStatus" column="to_payment_status"/>
+        <result property="fromShippingStatus" column="from_shipping_status"/>
+        <result property="toShippingStatus" column="to_shipping_status"/>
+        <result property="reason" column="reason"/>
+        <result property="requestId" column="request_id"/>
+        <result property="contextJson" column="context_json"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <sql id="selectColumns">
+        id,
+        order_id,
+        event_type,
+        actor_type,
+        actor_id,
+        from_order_status,
+        to_order_status,
+        from_payment_status,
+        to_payment_status,
+        from_shipping_status,
+        to_shipping_status,
+        reason,
+        request_id,
+        context_json,
+        create_time
+    </sql>
+
+    <insert id="insert" parameterType="com.authguard.usersystem.entity.SOrderStatusLog"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO s_order_status_logs (
+            order_id,
+            event_type,
+            actor_type,
+            actor_id,
+            from_order_status,
+            to_order_status,
+            from_payment_status,
+            to_payment_status,
+            from_shipping_status,
+            to_shipping_status,
+            reason,
+            request_id,
+            context_json,
+            create_time
+        ) VALUES (
+            #{orderId},
+            #{eventType},
+            #{actorType},
+            #{actorId},
+            #{fromOrderStatus},
+            #{toOrderStatus},
+            #{fromPaymentStatus},
+            #{toPaymentStatus},
+            #{fromShippingStatus},
+            #{toShippingStatus},
+            #{reason},
+            #{requestId},
+            #{contextJson},
+            #{createTime, jdbcType=TIMESTAMP}
+        )
+    </insert>
+
+    <select id="selectByOrderId" resultMap="SOrderStatusLogMap">
+        SELECT <include refid="selectColumns"/>
+        FROM s_order_status_logs
+        WHERE order_id = #{orderId}
+        ORDER BY create_time ASC, id ASC
+    </select>
+
+    <select id="selectLatestByOrderIdAndEventType" resultMap="SOrderStatusLogMap">
+        SELECT <include refid="selectColumns"/>
+        FROM s_order_status_logs
+        WHERE order_id = #{orderId}
+          AND event_type = #{eventType}
+        ORDER BY create_time DESC, id DESC
+        LIMIT 1
+    </select>
+
+    <select id="countByOrderId" resultType="int">
+        SELECT COUNT(*)
+        FROM s_order_status_logs
+        WHERE order_id = #{orderId}
+    </select>
+</mapper>

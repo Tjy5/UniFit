@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.authguard.usersystem.mapper.ISUserActivityLogMapper">
+
+    <resultMap id="SUserActivityLogResult" type="com.authguard.usersystem.entity.SUserActivityLog">
+        <id     property="logId"      column="log_id"      />
+        <result property="userId"     column="user_id"     />
+        <result property="sessionId"  column="session_id"  />
+        <result property="actionType" column="action_type" />
+        <result property="targetType" column="target_type" />
+        <result property="targetId"   column="target_id"   />
+        <result property="logDetail"  column="log_detail"  />
+        <result property="ipAddress"  column="ip_address"  />
+        <result property="userAgent"  column="user_agent"  />
+        <result property="requestUrl" column="request_url" />
+        <result property="requestMethod" column="request_method" />
+        <result property="logTime"    column="log_time"    />
+    </resultMap>
+
+    <insert id="insertLog" parameterType="com.authguard.usersystem.entity.SUserActivityLog" useGeneratedKeys="true" keyProperty="logId">
+        INSERT INTO s_user_activity_logs (
+        user_id, session_id, action_type, target_type, target_id,
+        log_detail, ip_address, user_agent, request_url, request_method, log_time
+        ) VALUES (
+        #{userId}, #{sessionId}, #{actionType}, #{targetType}, #{targetId},
+        #{logDetail}, #{ipAddress}, #{userAgent}, #{requestUrl}, #{requestMethod},
+        <if test="logTime != null">#{logTime}</if> <!-- 如果代码中设置时间 -->
+        <if test="logTime == null">NOW()</if>      <!-- 否则使用数据库当前时间 -->
+        )
+    </insert>
+
+</mapper>

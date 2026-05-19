@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.authguard.usersystem.mapper.SOrdersMapper">
+
+    <resultMap id="SAddressBaseMap" type="com.authguard.usersystem.entity.SAddress">
+        <id property="id" column="addr_id"/>
+        <result property="userId" column="addr_user_id"/>
+        <result property="recipientName" column="addr_recipient_name"/>
+        <result property="phoneNumber" column="addr_phone_number"/>
+        <result property="province" column="addr_province"/>
+        <result property="city" column="addr_city"/>
+        <result property="district" column="addr_district"/>
+        <result property="streetAddress" column="addr_street_address"/>
+        <result property="isDefault" column="addr_is_default"/>
+    </resultMap>
+
+    <resultMap id="SOrdersWithItemsMap" type="com.authguard.usersystem.entity.SOrders">
+        <id property="id" column="s_order_id" />
+        <result property="userId" column="user_id" />
+        <result property="orderDate" column="order_date" />
+        <result property="totalPrice" column="total_price" />
+        <result property="addressId" column="address_id" />
+        <result property="status" column="status" />
+        <result property="paymentStatusCode" column="payment_status"/>
+        <result property="shippingStatusCode" column="shipping_status"/>
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="updateBy" column="update_by" />
+        <result property="updateTime" column="update_time" />
+        <result property="remark" column="remark" />
+
+        <association property="shippingAddress" resultMap="SAddressBaseMap" />
+
+        <collection property="orderItems" column="s_order_id" javaType="java.util.List"
+                    ofType="com.authguard.usersystem.entity.SOrderItem"
+                    select="com.authguard.usersystem.mapper.SOrderItemMapper.selectByOrderId"/>
+    </resultMap>
+
+    <resultMap id="SOrdersBaseMap" type="com.authguard.usersystem.entity.SOrders">
+        <id property="id" column="id" />
+        <result property="userId" column="user_id" />
+        <result property="orderDate" column="order_date" />
+        <result property="totalPrice" column="total_price" />
+        <result property="addressId" column="address_id" />
+        <result property="status" column="status" />
+        <result property="paymentStatusCode" column="payment_status"/>
+        <result property="shippingStatusCode" column="shipping_status"/>
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="updateBy" column="update_by" />
+        <result property="updateTime" column="update_time" />
+        <result property="remark" column="remark" />
+    </resultMap>
+
+
+    <sql id="selectOrderColumns">
+        o.id as s_order_id,
+        o.user_id,
+        o.order_date,
+        o.total_price,
+        o.address_id,
+        o.status,
+        o.payment_status,
+        o.shipping_status,
+        o.create_by,
+        o.create_time,
+        o.update_by,
+        o.update_time,
+        o.remark
+    </sql>
+
+    <sql id="selectAddressColumns">
+        sa.id as addr_id,
+        sa.user_id as addr_user_id,
+        sa.recipient_name as addr_recipient_name,
+        sa.phone_number as addr_phone_number,
+        sa.province as addr_province,
+        sa.city as addr_city,
+        sa.district as addr_district,
+        sa.street_address as addr_street_address,
+        sa.is_default as addr_is_default
+    </sql>
+
+    <select id="selectByUserId" resultMap="SOrdersWithItemsMap">
+        SELECT
+        <include refid="selectOrderColumns"/>,
+        <include refid="selectAddressColumns"/>
+        FROM s_orders o
+        LEFT JOIN s_address sa ON o.address_id = sa.id
+        WHERE o.user_id = #{userId}
+        ORDER BY o.order_date DESC
+    </select>
+
+    <select id="selectById" resultMap="SOrdersWithItemsMap">
+        SELECT
+        <include refid="selectOrderColumns"/>,
+        <include refid="selectAddressColumns"/>
+        FROM s_orders o
+        LEFT JOIN s_address sa ON o.address_id = sa.id
+        WHERE o.id = #{id}
+    </select>
+
+    <insert id="insertOrder" parameterType="com.authguard.usersystem.entity.SOrders"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO s_orders (
+            user_id,
+            order_date,
+            total_price,
+            address_id,
+            status,
+            payment_status,
+            shipping_status,
+            create_by,
+            create_time,
+            update_by,
+            update_time,
+            remark
+        ) VALUES (
+                     #{userId},
+                     #{orderDate},
+                     #{totalPrice},
+                     #{addressId},
+                     #{status},
+                     #{paymentStatusCode},
+                     #{shippingStatusCode},
+                     #{createBy},
+                     #{createTime, jdbcType=TIMESTAMP},
+                     #{updateBy},
+                     #{updateTime, jdbcType=TIMESTAMP},
+                     #{remark}
+                 )
+    </insert>
+
+    <update id="updateOrder" parameterType="com.authguard.usersystem.entity.SOrders">
+        UPDATE s_orders
+        <set>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="orderDate != null">order_date = #{orderDate},</if>
+            <if test="totalPrice != null">total_price = #{totalPrice},</if>
+
+            <if test="addressId != null">address_id = #{addressId},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="paymentStatusCode != null and paymentStatusCode != ''">payment_status = #{paymentStatusCode},</if>
+            <if test="shippingStatusCode != null and shippingStatusCode != ''">shipping_status = #{shippingStatusCode},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime, jdbcType=TIMESTAMP},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateOrderTotalPrice" parameterType="com.authguard.usersystem.entity.SOrders">
+        UPDATE s_orders
+        SET total_price = #{totalPrice}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteSOrdersById" parameterType="Long">
+        DELETE FROM s_orders WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteSOrdersByIds" parameterType="java.util.List">
+        DELETE FROM s_orders WHERE id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

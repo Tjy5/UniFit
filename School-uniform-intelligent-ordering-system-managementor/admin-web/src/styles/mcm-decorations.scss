@@ -1,0 +1,19 @@
+.mcm-starburst,
+.mcm-geo-bg,
+.mcm-orbit {
+  position: relative;
+}
+
+.mcm-starburst::before,
+.mcm-geo-bg::after,
+.mcm-orbit::before,
+.mcm-orbit::after {
+  display: none;
+}
+
+.mcm-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+}

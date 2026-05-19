@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.authguard.usersystem.mapper.CalibrationAuditMapper">
+
+    <resultMap id="CalibrationAuditMap" type="com.authguard.usersystem.entity.CalibrationAudit">
+        <id property="auditId" column="audit_id"/>
+        <result property="paramId" column="param_id"/>
+        <result property="action" column="action"/>
+        <result property="oldValue" column="old_value"/>
+        <result property="newValue" column="new_value"/>
+        <result property="reason" column="reason"/>
+        <result property="operator" column="operator"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <sql id="selectCalibrationAuditColumns">
+        audit_id,
+        param_id,
+        action,
+        old_value,
+        new_value,
+        reason,
+        operator,
+        create_time
+    </sql>
+
+    <insert id="insert" parameterType="com.authguard.usersystem.entity.CalibrationAudit" useGeneratedKeys="true" keyProperty="auditId">
+        INSERT INTO calibration_audit (
+            param_id,
+            action,
+            old_value,
+            new_value,
+            reason,
+            operator,
+            create_time
+        ) VALUES (
+            #{paramId},
+            #{action},
+            #{oldValue},
+            #{newValue},
+            #{reason},
+            #{operator},
+            #{createTime}
+        )
+    </insert>
+
+    <select id="selectByParamId" resultMap="CalibrationAuditMap">
+        SELECT <include refid="selectCalibrationAuditColumns"/>
+        FROM calibration_audit
+        WHERE param_id = #{paramId}
+        ORDER BY create_time DESC, audit_id DESC
+    </select>
+
+    <select id="selectLatestAuditRevision" resultType="java.lang.Long">
+        SELECT COALESCE(MAX(audit_id), 0)
+        FROM calibration_audit
+    </select>
+</mapper>

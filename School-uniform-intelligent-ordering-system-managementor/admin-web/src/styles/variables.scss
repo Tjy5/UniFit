@@ -1,0 +1,149 @@
+@font-face {
+  font-family: 'Outfit';
+  src: url('/fonts/outfit-latin-300-normal.woff2') format('woff2');
+  font-display: swap;
+  font-style: normal;
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('/fonts/outfit-latin-400-normal.woff2') format('woff2');
+  font-display: swap;
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('/fonts/outfit-latin-500-normal.woff2') format('woff2');
+  font-display: swap;
+  font-style: normal;
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('/fonts/outfit-latin-600-normal.woff2') format('woff2');
+  font-display: swap;
+  font-style: normal;
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  src: url('/fonts/outfit-latin-700-normal.woff2') format('woff2');
+  font-display: swap;
+  font-style: normal;
+  font-weight: 700;
+}
+
+:root {
+  --font-sans: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', 'Helvetica Neue', Arial, sans-serif;
+  --layout-sidebar: 240px;
+  --layout-sidebar-collapsed: 64px;
+  --layout-navbar: 50px;
+  --layout-min-width: 1200px;
+  --app-bg: #f3f6fa;
+  --surface: #ffffff;
+  --surface-strong: #ffffff;
+  --surface-muted: #f1f5f9;
+  --surface-subtle: #f8fafc;
+  --line: #d8e1ec;
+  --line-strong: #b7c4d4;
+  --text-primary: #172033;
+  --text-secondary: #536275;
+  --text-muted: #748196;
+  --brand: #0f4c81;
+  --brand-hover: #0b3f6d;
+  --brand-soft: #e8f1fa;
+  --brand-subtle: #f2f7fc;
+  --accent: #0f766e;
+  --accent-soft: #e6f4f1;
+  --success: #15803d;
+  --success-soft: #e8f7ee;
+  --warning: #b45309;
+  --warning-soft: #fff3df;
+  --danger: #dc2626;
+  --danger-soft: #feecec;
+  --info: #2563eb;
+  --info-soft: #e8f0ff;
+  --shadow-soft: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 8px 22px rgba(15, 23, 42, 0.07);
+  --shadow-lg: 0 18px 42px rgba(15, 23, 42, 0.1);
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 12px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+
+  /* Compatibility aliases for old selectors during page-by-page migration. */
+  --mcm-beige: var(--app-bg);
+  --mcm-white: #fff;
+  --mcm-brown: var(--text-primary);
+  --mcm-orange: var(--brand);
+  --mcm-mustard: var(--warning);
+  --mcm-olive: var(--success);
+  --mcm-walnut: #334155;
+  --mcm-teak: #475569;
+  --mcm-blue-gray: var(--info);
+  --mcm-coral: var(--danger);
+  --mcm-cream: var(--surface);
+  --mcm-sand: var(--surface-muted);
+  --mcm-ink-soft: var(--text-secondary);
+  --mcm-ink-faint: var(--text-muted);
+  --mcm-line: var(--line);
+  --mcm-line-strong: var(--line-strong);
+  --mcm-surface: var(--surface);
+  --mcm-surface-strong: var(--surface-strong);
+  --mcm-surface-muted: var(--surface-muted);
+  --mcm-shadow-soft: var(--shadow-soft);
+  --mcm-shadow-md: var(--shadow-md);
+  --mcm-shadow-lg: var(--shadow-lg);
+  --mcm-radius-xs: var(--radius-sm);
+  --mcm-radius-sm: var(--radius-lg);
+  --mcm-radius-md: var(--radius-lg);
+  --mcm-radius-lg: var(--radius-lg);
+  --mcm-radius-xl: var(--radius-xl);
+  --mcm-spacing-xs: var(--space-xs);
+  --mcm-spacing-sm: var(--space-sm);
+  --mcm-spacing-md: var(--space-md);
+  --mcm-spacing-lg: var(--space-lg);
+  --mcm-spacing-xl: var(--space-xl);
+  --mcm-spacing-2xl: var(--space-2xl);
+  --mcm-font-family: var(--font-sans);
+
+  --el-font-family: var(--font-sans);
+  --el-color-primary: var(--brand);
+  --el-color-primary-light-3: #3b78a8;
+  --el-color-primary-light-5: #75a2c2;
+  --el-color-primary-light-7: #b3cee0;
+  --el-color-primary-light-8: #d5e6f2;
+  --el-color-primary-light-9: var(--brand-soft);
+  --el-color-primary-dark-2: var(--brand-hover);
+  --el-color-success: var(--success);
+  --el-color-warning: var(--warning);
+  --el-color-danger: var(--danger);
+  --el-color-info: var(--info);
+  --el-border-radius-base: var(--radius-md);
+  --el-border-radius-small: var(--radius-sm);
+  --el-border-color: var(--line);
+  --el-border-color-light: #e3e9f1;
+  --el-border-color-lighter: #edf2f7;
+  --el-fill-color-blank: var(--surface);
+  --el-fill-color-light: var(--surface-subtle);
+  --el-fill-color: var(--surface-muted);
+  --el-bg-color: var(--surface);
+  --el-bg-color-overlay: var(--surface);
+  --el-text-color-primary: var(--text-primary);
+  --el-text-color-regular: var(--text-secondary);
+  --el-text-color-secondary: var(--text-muted);
+  --el-mask-color: rgba(15, 23, 42, 0.38);
+  font-family: var(--font-sans);
+}

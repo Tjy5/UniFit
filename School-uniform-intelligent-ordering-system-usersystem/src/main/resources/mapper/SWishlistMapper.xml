@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.authguard.usersystem.mapper.SWishlistMapper">
+
+    <resultMap id="WishlistWithDetailsMap" type="com.authguard.usersystem.dto.SWishlistDetailDto">
+        <id property="wishlistId" column="wishlist_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="uniformId" column="uniform_id"/>
+        <result property="addedTime" column="added_time"/>
+        <result property="uniformName" column="uniform_name_alias"/>
+        <result property="uniformPrice" column="uniform_price_alias"/>
+        <result property="uniformImage" column="uniform_image_alias"/>
+        <result property="schoolName" column="school_name_alias"/>
+        <result property="gradeName" column="grade_name_alias"/>
+    </resultMap>
+
+    <!-- 插入 -->
+    <!-- Added useGeneratedKeys and keyProperty to populate the ID back into the SWishlist object -->
+    <insert id="insertWishlist" useGeneratedKeys="true" keyProperty="wishlistId" parameterType="com.authguard.usersystem.entity.SWishlist">
+        INSERT INTO s_wishlists (user_id, uniform_id, added_time)
+        VALUES (#{userId}, #{uniformId}, NOW())
+    </insert>
+
+    <!-- 删除 -->
+    <delete id="deleteWishlist">
+        DELETE FROM s_wishlists
+        WHERE user_id = #{userId} AND uniform_id = #{uniformId}
+    </delete>
+
+    <!-- 查询 -->
+    <select id="selectWishlistWithDetailsByUserId" resultMap="WishlistWithDetailsMap">
+        SELECT
+            w.wishlist_id,
+            w.user_id,
+            w.uniform_id,
+            w.added_time,
+            u.name as uniform_name_alias,
+            u.price as uniform_price_alias,
+            u.image as uniform_image_alias,
+            s.school_name as school_name_alias,
+            g.grade_name as grade_name_alias
+        FROM
+            s_wishlists w
+                JOIN
+            s_uniform u ON w.uniform_id = u.id
+                LEFT JOIN
+            s_schools s ON u.school_id = s.school_id
+                LEFT JOIN
+            s_grades g ON u.grade_id = g.grade_id
+        WHERE
+            w.user_id = #{userId}
+        ORDER BY
+            w.added_time DESC
+    </select>
+
+    <!-- 判断是否存在 -->
+    <select id="countByUserAndUniform" resultType="int">
+        SELECT COUNT(*) FROM s_wishlists
+        WHERE user_id = #{userId} AND uniform_id = #{uniformId}
+    </select>
+
+</mapper>

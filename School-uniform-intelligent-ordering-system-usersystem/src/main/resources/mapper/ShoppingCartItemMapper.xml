@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.authguard.usersystem.mapper.ShoppingCartItemMapper">
+
+    <resultMap id="ShoppingCartItemMap" type="com.authguard.usersystem.entity.ShoppingCartItem">
+        <id property="cartItemId" column="cart_item_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="uniformId" column="uniform_id"/>
+        <result property="sizeId" column="size_id"/>
+        <result property="recommendationLogId" column="recommendation_log_id"/>
+        <result property="quantity" column="quantity"/>
+        <result property="addedAt" column="added_at"/>
+    </resultMap>
+
+    <resultMap id="ShoppingCartItemDetailMap" type="com.authguard.usersystem.entity.ShoppingCartItem" extends="ShoppingCartItemMap">
+        <result property="uniformName" column="uniform_name"/>
+        <result property="unitPrice" column="uniform_price"/>
+        <result property="uniformImage" column="uniform_image"/>
+        <result property="sizeNameDisplay" column="size_name_display"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.authguard.usersystem.entity.ShoppingCartItem" useGeneratedKeys="true" keyProperty="cartItemId">
+        INSERT INTO s_shopping_cart_items (user_id, uniform_id, size_id, recommendation_log_id, quantity, added_at)
+        VALUES (#{userId}, #{uniformId}, #{sizeId}, #{recommendationLogId}, #{quantity}, #{addedAt,jdbcType=TIMESTAMP})
+    </insert>
+
+    <select id="selectByUserIdAndUniformIdAndSizeId" resultMap="ShoppingCartItemMap">
+        SELECT * FROM s_shopping_cart_items
+        WHERE user_id = #{userId} AND uniform_id = #{uniformId} AND size_id = #{sizeId}
+    </select>
+
+    <select id="selectByUserId" resultMap="ShoppingCartItemDetailMap">
+        SELECT
+            sci.*,
+            su.name as uniform_name,
+            su.price as uniform_price,
+            su.image as uniform_image,
+            ss.size_name as size_name_display
+        FROM s_shopping_cart_items sci
+                 LEFT JOIN s_uniform su ON sci.uniform_id = su.id
+                 LEFT JOIN s_sizes ss ON sci.size_id = ss.id
+        WHERE sci.user_id = #{userId}
+        ORDER BY sci.added_at DESC
+    </select>
+
+    <update id="updateQuantity" parameterType="com.authguard.usersystem.entity.ShoppingCartItem">
+        UPDATE s_shopping_cart_items
+        SET quantity = #{quantity},
+            recommendation_log_id = #{recommendationLogId}
+        WHERE cart_item_id = #{cartItemId} AND user_id = #{userId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM s_shopping_cart_items WHERE cart_item_id = #{cartItemId}
+    </delete>
+
+    <delete id="deleteByUserIdAndCartItemId">
+        DELETE FROM s_shopping_cart_items WHERE user_id = #{userId} AND cart_item_id = #{cartItemId}
+    </delete>
+
+    <delete id="deleteByUserId">
+        DELETE FROM s_shopping_cart_items WHERE user_id = #{userId}
+    </delete>
+</mapper>

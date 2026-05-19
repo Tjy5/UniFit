@@ -1,0 +1,61 @@
+spring:
+  application:
+    name: mall
+  profiles:
+    default: dev
+  datasource:
+    url: ${USERSYSTEM_DB_URL:jdbc:mysql://localhost:3306/suios?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8}
+    username: ${USERSYSTEM_DB_USERNAME:dev_only_user}
+    password: ${USERSYSTEM_DB_PASSWORD:dev_only_password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+file:
+  upload-dir: ${USERSYSTEM_UPLOAD_DIR:images/reviews}
+
+jwt:
+  secret: ${USERSYSTEM_JWT_SECRET:dev-only-usersystem-jwt-secret-change-me-before-production}
+  expiration: ${USERSYSTEM_JWT_EXPIRATION:1800000}
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.authguard.usersystem.entity
+  configuration:
+    map-underscore-to-camel-case: true
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.authguard.usersystem.entity
+  configuration:
+    map-underscore-to-camel-case: true
+
+server:
+  port: 9090
+
+calibration:
+  enabled: false
+  cache-ttl-minutes: 15
+  decay-days: 90
+  window-days: 180
+  auto-job:
+    enabled: false
+    cron: "0 0 2 * * ?"
+  thresholds:
+    min-feedback-count: 20
+    min-unique-users: 10
+
+size-preference:
+  enabled: true
+  min-feedback-samples: 2
+  max-score-offset: 8
+
+size-recommendation:
+  experiment:
+    enabled: ${USERSYSTEM_SIZE_RECOMMENDATION_EXPERIMENT_ENABLED:false}
+    experiment-key: ${USERSYSTEM_SIZE_RECOMMENDATION_EXPERIMENT_KEY:size-calibration-ab-test}
+    strategy-version: ${USERSYSTEM_SIZE_RECOMMENDATION_STRATEGY_VERSION:v1}
+    b-traffic-percentage: ${USERSYSTEM_SIZE_RECOMMENDATION_B_TRAFFIC_PERCENTAGE:50}
